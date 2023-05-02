@@ -4,6 +4,7 @@ package com.project.sistemaStock.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @AllArgsConstructor
@@ -13,6 +14,15 @@ public class User {
     public User() {
 
     }
+    public User(String name, String surname, String dni, String phone, String password) {
+        this.name = name;
+        this.surname = surname;
+        this.dni = dni;
+        this.phone = phone;
+        this.password = password;
+        this.status = true;
+    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +44,8 @@ public class User {
     @Column(name="password", nullable = false, length = 50)
     private String password;
 
-    @Column(name="state", nullable = false, length = 50)
-    private Boolean state;
+    @Column(name="status", nullable = false)
+    @ColumnDefault("true")
+    private Boolean status;
+
 }

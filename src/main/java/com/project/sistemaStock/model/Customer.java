@@ -2,16 +2,24 @@ package com.project.sistemaStock.model;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name="customers")
 public class Customer {
-    public Customer() {
 
+    public Customer(Integer id, String company, String name, String surname, String address, String phone) {
+        this.id = id;
+        this.company = company;
+        this.name = name;
+        this.surname = surname;
+        this.address = address;
+        this.phone = phone;
+        this.status = true;
     }
 
     @Id
@@ -35,7 +43,8 @@ public class Customer {
     @Column(name="phone", nullable = false, length =20)
     private String phone;
 
-    @Column(name="state", nullable = false, length = 50)
-    private Boolean state;
+    @Column(name="status", nullable = false)
+    @ColumnDefault("true")
+    private Boolean status;
 
 }

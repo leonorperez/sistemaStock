@@ -3,17 +3,18 @@ package com.project.sistemaStock.controller;
 import com.project.sistemaStock.model.User;
 import com.project.sistemaStock.repository.IUserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api")
 @AllArgsConstructor
 public class UserController {
-
+    @Autowired
     private final IUserRepository iUserRepository;
 
     @GetMapping(value="/users")
@@ -21,4 +22,12 @@ public class UserController {
         return iUserRepository.findAll();
 
     }
+
+    @PostMapping(value = "/user/new")
+    public ResponseEntity<?> save(@RequestBody User user){
+        User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getPhone(), user.getPassword());
+        return new ResponseEntity<>(iUserRepository.save(newUser), HttpStatus.OK);
+    }
+
+
 }
