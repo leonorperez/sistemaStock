@@ -14,10 +14,11 @@ public class User {
     public User() {
 
     }
-    public User(String name, String surname, String dni, String phone, String password) {
+    public User(String name, String surname, String dni, String email, String phone, String password) {
         this.name = name;
         this.surname = surname;
         this.dni = dni;
+        this.email = email;
         this.phone = phone;
         this.password = password;
         this.status = true;
@@ -37,6 +38,9 @@ public class User {
 
     @Column(name="dni", nullable = false, length = 10)
     private String dni;
+
+    @Column(name="email", nullable = false, length = 100)
+    private String email;
 
     @Column(name="phone", nullable = false, length =20)
     private String phone;

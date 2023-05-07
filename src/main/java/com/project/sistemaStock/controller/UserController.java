@@ -25,7 +25,7 @@ public class UserController {
 
     @PostMapping(value = "/user/new")
     public ResponseEntity<?> save(@RequestBody User user){
-        User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getPhone(), user.getPassword());
+        User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getEmail(), user.getPhone(), user.getPassword());
         return new ResponseEntity<>(iUserRepository.save(newUser), HttpStatus.OK);
     }
 
