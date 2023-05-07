@@ -1,4 +1,4 @@
-package com.project.sistemaStock;
+package com.project.sistemaStock.model;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
