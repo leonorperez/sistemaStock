@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.project.sistemaStock.security.WebSecurityConfig.passwordEncoder;
+
 @RestController
 @RequestMapping("/api")
 @AllArgsConstructor
@@ -19,13 +21,14 @@ public class UserController {
 
     @GetMapping(value="/users")
     public List<User> listUsers(){
+        System.out.println("´paso x aca");
         return iUserRepository.findAll();
 
     }
 
     @PostMapping(value = "/user/new")
     public ResponseEntity<?> save(@RequestBody User user){
-        User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getEmail(), user.getPhone(), user.getPassword());
+        User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getEmail(), user.getPhone(), passwordEncoder().encode(user.getPassword()));
         return new ResponseEntity<>(iUserRepository.save(newUser), HttpStatus.OK);
     }
 

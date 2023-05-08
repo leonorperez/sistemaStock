@@ -35,6 +35,35 @@
 			"response": []
 		},
 		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Julie\",\r\n    \"surname\":\"Ramos\",\r\n    \"document\": 45317666,\r\n    \"password\": \"12345\",\r\n    \"email\":\"julie@julie.com\",\r\n    \"phone\": 1132889999\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "users/getAll",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -61,35 +90,6 @@
 					"path": [
 						"users",
 						"3"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "customers delete",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Julie\",\r\n    \"surname\":\"Ramos\",\r\n    \"document\": 45317666,\r\n    \"password\": \"12345\",\r\n    \"email\":\"julie@julie.com\",\r\n    \"phone\": 1132889999\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/customer/1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"customer",
-						"1"
 					]
 				}
 			},

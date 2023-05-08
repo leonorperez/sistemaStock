@@ -11,9 +11,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 public class TokenUtils {
     //esto sirve para firmar el token;
-    private final static String ACCESS_TOKEN_SECRET = "mySecretKey123";
+    private final static String ACCESS_TOKEN_SECRET = "mySecretKey12300playstAtionPlusVIAJEaUSHu777771115555";
     private final static Long ACCESS_TOKEN_VALIDITY_SECONDS = 2_592_000L;
 
     public static String createToken(String name, String email){
