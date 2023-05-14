@@ -29,6 +29,7 @@ public class UserController {
 
         for (User user : users) {
             UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
             userDTO.setName(user.getName());
             userDTO.setSurname(user.getSurname());
             userDTO.setDni(user.getDni());
@@ -45,6 +46,7 @@ public class UserController {
         User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getEmail(), user.getPhone(), passwordEncoder().encode(user.getPassword()));
         newUser = iUserRepository.save(newUser);
         UserDTO userDTO = new UserDTO();
+        userDTO.setId(newUser.getId());
         userDTO.setName(newUser.getName());
         userDTO.setSurname(newUser.getSurname());
         userDTO.setEmail(newUser.getEmail());
@@ -60,6 +62,7 @@ public class UserController {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
             userDTO.setName(user.getName());
             userDTO.setSurname(user.getSurname());
             userDTO.setEmail(user.getEmail());
@@ -71,6 +74,36 @@ public class UserController {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
     }
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable int id) {
+        Optional<User> optionalUser = iUserRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setStatus(false);
+            iUserRepository.save(user);
+            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/user/{id}")
+    public ResponseEntity<?> updateUserById(@PathVariable int id, @RequestBody UserDTO userDTO) {
+        Optional<User> optionalUser = iUserRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setName(userDTO.getName());
+            user.setSurname(userDTO.getSurname());
+            user.setDni(userDTO.getDni());
+            user.setEmail(userDTO.getEmail());
+            user.setPhone(userDTO.getPhone());
+            iUserRepository.save(user);
+            return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 
 }
