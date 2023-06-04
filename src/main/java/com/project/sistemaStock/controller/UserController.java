@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.project.sistemaStock.security.WebSecurityConfig.passwordEncoder;
 
@@ -44,6 +45,7 @@ public class UserController {
     @PostMapping(value = "/user/new")
     public ResponseEntity<?> save(@RequestBody User user) {
         User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getEmail(), user.getPhone(), passwordEncoder().encode(user.getPassword()));
+        newUser.setId(UUID.fromString(UUID.randomUUID().toString())); // Asignar un nuevo UUID al ID del usuario
         newUser = iUserRepository.save(newUser);
         UserDTO userDTO = new UserDTO();
         userDTO.setId(newUser.getId());
@@ -57,8 +59,14 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable int id) {
-        Optional<User> optionalUser = iUserRepository.findById(id);
+    public ResponseEntity<?> getUserById(@PathVariable String  id) {
+        UUID userId;
+        try {
+            userId = UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("Invalid user ID", HttpStatus.BAD_REQUEST);
+        }
+        Optional<User> optionalUser = iUserRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             UserDTO userDTO = new UserDTO();
@@ -74,8 +82,9 @@ public class UserController {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
     }
+
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable int id) {
+    public ResponseEntity<?> deleteById(@PathVariable UUID id) {
         Optional<User> optionalUser = iUserRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -88,7 +97,7 @@ public class UserController {
     }
 
     @PutMapping("/user/{id}")
-    public ResponseEntity<?> updateUserById(@PathVariable int id, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> updateUserById(@PathVariable UUID id, @RequestBody UserDTO userDTO) {
         Optional<User> optionalUser = iUserRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
