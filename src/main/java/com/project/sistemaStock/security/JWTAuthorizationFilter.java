@@ -1,6 +1,5 @@
 package com.project.sistemaStock.security;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
