@@ -3,6 +3,8 @@ package com.project.sistemaStock.controller;
 import com.project.sistemaStock.dto.UserDTO;
 import com.project.sistemaStock.model.User;
 import com.project.sistemaStock.repository.IUserRepository;
+import com.project.sistemaStock.services.IUserService;
+import com.project.sistemaStock.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,8 @@ import static com.project.sistemaStock.security.WebSecurityConfig.passwordEncode
 public class UserController {
     @Autowired
     private final IUserRepository iUserRepository;
+    @Autowired
+    private final IUserService iUserService;
 
     @GetMapping(value = "/users")
     public Map<String, Object> listUsers() {
@@ -49,6 +53,7 @@ public class UserController {
 
     @PostMapping(value = "/user/new")
     public ResponseEntity<?> save(@RequestBody User user) {
+        return new ResponseEntity<>(iUserService.create(user),HttpStatus.OK);
         try {
             User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getEmail(), user.getPhone(), passwordEncoder().encode(user.getPassword()));
             newUser.setId(UUID.fromString(UUID.randomUUID().toString()));
@@ -64,6 +69,8 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+
+
     }
 
     @GetMapping("/user/{id}")
