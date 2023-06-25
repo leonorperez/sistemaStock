@@ -5,6 +5,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -41,7 +43,36 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String token = TokenUtils.createToken(userDetails.getName(),userDetails.getUsername());
 
-        response.addHeader("Authorization", "Bearer" + token);
+
+        // Crear un objeto JSON con la información del usuario
+        JSONObject userJson = new JSONObject();
+        try {
+            //aca hay que hacer una llamada byId y traer el usuario completo y dejar de hacer un try x cada item
+            userJson.put("name", userDetails.getName());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            userJson.put("username", userDetails.getUsername());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        JSONObject responseJson = new JSONObject();
+        try {
+            responseJson.put("user", userJson);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            responseJson.put("token", "Bearer " + token);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        response.addHeader("Authorization", "Bearer " + token);
+        response.setContentType("application/json");
+        response.getWriter().write(responseJson.toString());
         response.getWriter().flush();
 
         super.successfulAuthentication(request, response, chain, authResult);

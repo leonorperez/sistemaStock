@@ -13,6 +13,7 @@ import java.util.*;
 
 import static com.project.sistemaStock.security.WebSecurityConfig.passwordEncoder;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api")
 @AllArgsConstructor
