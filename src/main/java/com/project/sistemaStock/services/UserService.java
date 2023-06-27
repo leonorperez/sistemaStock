@@ -3,20 +3,21 @@ package com.project.sistemaStock.services;
 import com.project.sistemaStock.dto.UserDTO;
 import com.project.sistemaStock.model.User;
 import com.project.sistemaStock.repository.IUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 import static com.project.sistemaStock.security.WebSecurityConfig.passwordEncoder;
-
-public class UserService {
-    @Autowired
+@Service
+public class UserService implements IUserService{
     private final IUserRepository iUserRepository;
 
+    public UserService(IUserRepository iUserRepository) {
+        this.iUserRepository = iUserRepository;
+    }
 
-  @Override
+
+    @Override
    public UserDTO create(User user){
         try {
             User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getEmail(), user.getPhone(), passwordEncoder().encode(user.getPassword()));
@@ -36,6 +37,26 @@ public class UserService {
             return userDTO;
 //            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Override
+    public UserDTO getAll() {
+        return null;
+    }
+
+    @Override
+    public UserDTO getById(String id) {
+        return null;
+    }
+
+    @Override
+    public UserDTO update(UUID id, UserDTO userDTO) {
+        return null;
+    }
+
+    @Override
+    public UserDTO delete(UUID id) {
+        return null;
     }
 
 

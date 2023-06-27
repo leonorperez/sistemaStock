@@ -21,7 +21,7 @@ import static com.project.sistemaStock.security.WebSecurityConfig.passwordEncode
 public class UserController {
     @Autowired
     private final IUserRepository iUserRepository;
-    @Autowired
+
     private final IUserService iUserService;
 
     @GetMapping(value = "/users")
@@ -51,9 +51,9 @@ public class UserController {
         return response;
     }
 
-    @PostMapping(value = "/user/new")
+   /* @PostMapping(value = "/user/new")
     public ResponseEntity<?> save(@RequestBody User user) {
-        return new ResponseEntity<>(iUserService.create(user),HttpStatus.OK);
+        //return new ResponseEntity<>(iUserService.create(user),HttpStatus.OK);
         try {
             User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getEmail(), user.getPhone(), passwordEncoder().encode(user.getPassword()));
             newUser.setId(UUID.fromString(UUID.randomUUID().toString()));
@@ -69,9 +69,17 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-
-
     }
+    */
+   @PostMapping(value = "/user/new")
+   public ResponseEntity<?> save(@RequestBody User user) {
+       try {
+           UserDTO userDTO = iUserService.create(user);
+           return ResponseEntity.ok(userDTO);
+       } catch (Exception e) {
+           return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+       }
+   }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getUserById(@PathVariable String id) {
