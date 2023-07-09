@@ -5,6 +5,7 @@ import com.project.sistemaStock.model.User;
 import com.project.sistemaStock.repository.IUserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.project.sistemaStock.security.WebSecurityConfig.passwordEncoder;
@@ -45,9 +46,32 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public UserDTO getById(String id) {
-        return null;
+    public UserDTO getById(UUID id) {
+        try {
+            Optional<User> optionalUser = iUserRepository.findById(id);
+
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+
+                UserDTO userDTO = new UserDTO();
+                userDTO.setId(user.getId());
+                userDTO.setName(user.getName());
+                userDTO.setSurname(user.getSurname());
+                userDTO.setEmail(user.getEmail());
+                userDTO.setDni(user.getDni());
+                userDTO.setPhone(user.getPhone());
+
+                return userDTO;
+            } else {
+                UserDTO userDTO = new UserDTO();
+                return userDTO;
+            }
+        } catch (Exception e) {
+            // Manejar cualquier excepción o error que pueda ocurrir
+            return null;
+        }
     }
+
 
     @Override
     public UserDTO update(UUID id, UserDTO userDTO) {
