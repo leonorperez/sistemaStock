@@ -37,7 +37,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             response.setContentType("application/json");
-            response.getWriter().write("Error de 404: " );
+            response.getWriter().write("invalid URL");
         }
     }
 
