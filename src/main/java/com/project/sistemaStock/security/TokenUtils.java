@@ -44,7 +44,7 @@ public class TokenUtils {
             return  new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
 
         }catch (JwtException e){
-            return null;
+            throw new RuntimeException("Error al procesar el token JWT: " + e.getMessage(), e);
         }
     }
 

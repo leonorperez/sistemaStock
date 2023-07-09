@@ -12,11 +12,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 
 @Configuration
+@EnableWebSecurity
 @AllArgsConstructor
-public class WebSecurityConfig {
+public class WebSecurityConfig  implements WebMvcConfigurer {
 
     private final UserDetailsService userDetailsService;
     private final JWTAuthorizationFilter jwtAuthorizationFilter;
@@ -26,10 +30,11 @@ public class WebSecurityConfig {
 
         JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter();
         jwtAuthenticationFilter.setAuthenticationManager(authManager);
-        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+        jwtAuthenticationFilter.setFilterProcessesUrl("/api/login");
 
 
         return http
+                .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .anyRequest()
@@ -45,15 +50,16 @@ public class WebSecurityConfig {
                 .build();
     }
 
-    /* @Bean
-     UserDetailsService userDetailsService(){
-         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-         manager.createUser(User.withUsername("admin")
-                 .password(passwordEncoder().encode("admin"))
-                 .roles()
-                 .build());
-         return manager;
-     }*/
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")
+                .allowedOrigins("http://localhost:5173")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
+    }
+
     @Bean
     AuthenticationManager authManager(HttpSecurity http) throws Exception {
 
@@ -75,4 +81,3 @@ public class WebSecurityConfig {
     }
 
 }
-
