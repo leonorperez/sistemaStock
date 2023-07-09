@@ -5,8 +5,7 @@ import com.project.sistemaStock.model.User;
 import com.project.sistemaStock.repository.IUserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.project.sistemaStock.security.WebSecurityConfig.passwordEncoder;
 @Service
@@ -46,7 +45,8 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public UserDTO getById(UUID id) {
+    public Map<String,Object> getById(UUID id) {
+        Map<String, Object> response = new HashMap<>();
         try {
             Optional<User> optionalUser = iUserRepository.findById(id);
 
@@ -61,15 +61,18 @@ public class UserService implements IUserService{
                 userDTO.setDni(user.getDni());
                 userDTO.setPhone(user.getPhone());
 
-                return userDTO;
+                response.put("errors", Collections.singletonMap("message", null));
+                response.put("data", userDTO);
+
             } else {
-                UserDTO userDTO = new UserDTO();
-                return userDTO;
+                response.put("errors", Collections.singletonMap("message", "Usuario Inexistente"));
+
             }
         } catch (Exception e) {
-            // Manejar cualquier excepción o error que pueda ocurrir
-            return null;
+            response.put("errors", Collections.singletonMap("message", e.getMessage()));
+
         }
+        return response;
     }
 
 

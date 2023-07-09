@@ -51,26 +51,7 @@ public class UserController {
         return response;
     }
 
-    /* @PostMapping(value = "/user/new")
-     public ResponseEntity<?> save(@RequestBody User user) {
-         //return new ResponseEntity<>(iUserService.create(user),HttpStatus.OK);
-         try {
-             User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getEmail(), user.getPhone(), passwordEncoder().encode(user.getPassword()));
-             newUser.setId(UUID.fromString(UUID.randomUUID().toString()));
-             newUser = iUserRepository.save(newUser);
-             UserDTO userDTO = new UserDTO();
-             userDTO.setId(newUser.getId());
-             userDTO.setName(newUser.getName());
-             userDTO.setSurname(newUser.getSurname());
-             userDTO.setEmail(newUser.getEmail());
-             userDTO.setDni(newUser.getDni());
-             userDTO.setPhone(newUser.getPhone());
-             return new ResponseEntity<>(userDTO, HttpStatus.OK);
-         } catch (Exception e) {
-             return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
-         }
-     }
-     */
+
     @PostMapping(value = "/user/new")
     public ResponseEntity<?> save(@RequestBody User user) {
         try {
@@ -81,15 +62,22 @@ public class UserController {
         }
     }
     @GetMapping("/user/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable UUID id) {
-        UserDTO userDTO = iUserService.getById(id);
+    public ResponseEntity<?> getUserById(@PathVariable String id) {
+        try {
+            UUID uuid = UUID.fromString(id); // Intenta convertir la cadena a UUID
 
-        if (userDTO != null) {
-            return new ResponseEntity<>(userDTO, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            Map<String,Object> response = iUserService.getById(uuid);
+
+            if (response.containsKey("data")) {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("Invalid UUID", HttpStatus.BAD_REQUEST);
         }
     }
+
 
     @DeleteMapping("/user/{id}")
     public ResponseEntity<?> deleteById(@PathVariable UUID id) {

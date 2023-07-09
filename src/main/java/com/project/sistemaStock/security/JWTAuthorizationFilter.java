@@ -52,13 +52,15 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
         // Validar las URLs permitidas para cada método HTTP específico
         if (method.equals("GET")) {
-            return requestURI.equals("/api/users") || requestURI.matches("/api/user/\\w+");
+            // Permitir URLs que comiencen con "/api/user/" y tengan un identificador UUID al final
+            return requestURI.matches("/api/user/\\w+-\\w+-\\w+-\\w+-\\w+") || requestURI.matches("/api/user/\\w+-\\w+-\\w+-\\w+-\\w+/.*");
         } else if (method.equals("POST")) {
             return requestURI.equals("/api/user/new") || requestURI.equals("/api/login");
         } else if (method.equals("PUT") || method.equals("DELETE")) {
-            return requestURI.matches("/api/user/\\w+");
+            // Permitir URLs que comiencen con "/api/user/" y tengan un identificador UUID al final
+            return requestURI.matches("/api/user/\\w+-\\w+-\\w+-\\w+-\\w+") || requestURI.matches("/api/user/\\w+-\\w+-\\w+-\\w+-\\w+/.*");
         }
+
         return false;
     }
-
 }
