@@ -7,6 +7,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -14,6 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -33,6 +38,31 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         );
         return getAuthenticationManager().authenticate(userNamePat);
     }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+//        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+        String errorMessage;
+        if (failed instanceof BadCredentialsException) {
+            errorMessage = "Credenciales inválidas. Por favor, verifica tu correo electrónico y contraseña.";
+        } else if (failed instanceof DisabledException) {
+            errorMessage = "Tu cuenta está deshabilitada. Contacta al administrador.";
+        } else {
+            errorMessage = "Error de autenticación. Por favor, verifica tus credenciales.";
+        }
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("timestamp", System.currentTimeMillis());
+        responseBody.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+        responseBody.put("error", "Unauthorized");
+        responseBody.put("message", errorMessage);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(response.getOutputStream(), responseBody);
+    }
+
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request,

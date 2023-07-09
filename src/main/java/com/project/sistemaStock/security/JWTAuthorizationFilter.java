@@ -20,17 +20,45 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         System.out.println("JWTAuthorizationFilter: filtrando solicitud...");
-        try {
-            String bearerToken = request.getHeader("Authorization");
-            if (bearerToken != null && bearerToken.startsWith("Bearer")) {
-                String token = bearerToken.replace("Bearer", "");
-                UsernamePasswordAuthenticationToken userNamePAT = TokenUtils.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(userNamePAT);
+
+        if (isValidUrl(request)) {
+            try {
+                String bearerToken = request.getHeader("Authorization");
+                if (bearerToken != null && bearerToken.startsWith("Bearer")) {
+                    String token = bearerToken.replace("Bearer", "");
+                    UsernamePasswordAuthenticationToken userNamePAT = TokenUtils.getAuthentication(token);
+                    SecurityContextHolder.getContext().setAuthentication(userNamePAT);
+                }
+                filterChain.doFilter(request, response);
+            } catch (RuntimeException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Error de autenticación: " + e.getMessage());
             }
-            filterChain.doFilter(request, response);
-        } catch (RuntimeException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Error de autenticación: " + e.getMessage());
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.setContentType("application/json");
+            response.getWriter().write("Error de 404: " );
         }
     }
+
+    private boolean isValidUrl(HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        String method = request.getMethod();
+
+        // Validar que la URL comience con "/api/"
+        if (!requestURI.startsWith("/api/")) {
+            return false;
+        }
+
+        // Validar las URLs permitidas para cada método HTTP específico
+        if (method.equals("GET")) {
+            return requestURI.equals("/api/users") || requestURI.matches("/api/user/\\w+");
+        } else if (method.equals("POST")) {
+            return requestURI.equals("/api/user/new") || requestURI.equals("/api/login");
+        } else if (method.equals("PUT") || method.equals("DELETE")) {
+            return requestURI.matches("/api/user/\\w+");
+        }
+        return false;
+    }
+
 }
