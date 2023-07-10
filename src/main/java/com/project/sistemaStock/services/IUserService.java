@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.UUID;
 @Service
 public interface IUserService {
-    public UserDTO create(User user);
-    public UserDTO getAll();
+    public  Map<String, Object> create(User user);
+    public Map<String,Object> getAll();
     public Map<String, Object> getById(UUID id);
     public UserDTO update(UUID id, UserDTO userDTO);
     public UserDTO delete(UUID id);

@@ -24,39 +24,12 @@ public class UserController {
 
     private final IUserService iUserService;
 
-    @GetMapping(value = "/users")
-    public Map<String, Object> listUsers() {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            List<User> users = iUserRepository.findAll();
-            List<UserDTO> userDTOS = new ArrayList<>();
-            for (User user : users) {
-                UserDTO userDTO = new UserDTO();
-                userDTO.setId(user.getId());
-                userDTO.setName(user.getName());
-                userDTO.setSurname(user.getSurname());
-                userDTO.setDni(user.getDni());
-                userDTO.setEmail(user.getEmail());
-                userDTO.setPhone(user.getPhone());
-                userDTOS.add(userDTO);
-            }
-            response.put("errors", Collections.singletonMap("message", null));
-            response.put("data", userDTOS);
-            response.put("count", userDTOS.size());
-        } catch (Exception e) {
-            response.put("errors", Collections.singletonMap("message", e.getMessage()));
-            response.put("data", new ArrayList<>());
-            response.put("count", 0);
-        }
-        return response;
-    }
-
 
     @PostMapping(value = "/user/new")
     public ResponseEntity<?> save(@RequestBody User user) {
         try {
-            UserDTO userDTO = iUserService.create(user);
-            return ResponseEntity.ok(userDTO);
+            Map<String,Object> response = iUserService.create(user);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
@@ -76,6 +49,22 @@ public class UserController {
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>("Invalid UUID", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping(value = "/users")
+    public ResponseEntity<?> listUsers() {
+        try {
+            Map<String,Object> response = iUserService.getAll();
+
+            if (response.containsKey("data")) {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 

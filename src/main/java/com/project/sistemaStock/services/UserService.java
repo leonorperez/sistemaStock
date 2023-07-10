@@ -8,44 +8,35 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 import static com.project.sistemaStock.security.WebSecurityConfig.passwordEncoder;
+
 @Service
-public class UserService implements IUserService{
+public class UserService implements IUserService {
     private final IUserRepository iUserRepository;
 
     public UserService(IUserRepository iUserRepository) {
         this.iUserRepository = iUserRepository;
     }
 
-
     @Override
-   public UserDTO create(User user){
+    public Map<String, Object> create(User user) {
+        Map<String, Object> response = new HashMap<>();
         try {
             User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getEmail(), user.getPhone(), passwordEncoder().encode(user.getPassword()));
             newUser.setId(UUID.fromString(UUID.randomUUID().toString()));
             newUser = iUserRepository.save(newUser);
-            UserDTO userDTO = new UserDTO();
-            userDTO.setId(newUser.getId());
-            userDTO.setName(newUser.getName());
-            userDTO.setSurname(newUser.getSurname());
-            userDTO.setEmail(newUser.getEmail());
-            userDTO.setDni(newUser.getDni());
-            userDTO.setPhone(newUser.getPhone());
-            return userDTO;
-           // return new ResponseEntity<>(userDTO, HttpStatus.OK);
+            UserDTO userDTO = setUserDto(newUser);
+
+            response.put("errors", Collections.singletonMap("message", null));
+            response.put("data", userDTO);
+
         } catch (Exception e) {
-            UserDTO userDTO = new UserDTO();
-            return userDTO;
-//            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+            response.put("errors", Collections.singletonMap("message", e.getMessage()));
         }
+        return response;
     }
 
     @Override
-    public UserDTO getAll() {
-        return null;
-    }
-
-    @Override
-    public Map<String,Object> getById(UUID id) {
+    public Map<String, Object> getById(UUID id) {
         Map<String, Object> response = new HashMap<>();
         try {
             Optional<User> optionalUser = iUserRepository.findById(id);
@@ -53,24 +44,39 @@ public class UserService implements IUserService{
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
 
-                UserDTO userDTO = new UserDTO();
-                userDTO.setId(user.getId());
-                userDTO.setName(user.getName());
-                userDTO.setSurname(user.getSurname());
-                userDTO.setEmail(user.getEmail());
-                userDTO.setDni(user.getDni());
-                userDTO.setPhone(user.getPhone());
+                UserDTO userDTO = setUserDto(user);
 
                 response.put("errors", Collections.singletonMap("message", null));
                 response.put("data", userDTO);
 
             } else {
                 response.put("errors", Collections.singletonMap("message", "Usuario Inexistente"));
-
             }
         } catch (Exception e) {
             response.put("errors", Collections.singletonMap("message", e.getMessage()));
 
+        }
+        return response;
+    }
+
+
+    @Override
+    public Map<String, Object> getAll() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<User> users = iUserRepository.findAllByStatus(true);
+
+            List<UserDTO> userDTOS = new ArrayList<>();
+            for (User user : users) {
+                UserDTO userDTO = setUserDto(user);
+                userDTOS.add(userDTO);
+            }
+            response.put("errors", Collections.singletonMap("message", null));
+            response.put("data", userDTOS);
+            response.put("count", userDTOS.size());
+        } catch (Exception e) {
+            response.put("errors", Collections.singletonMap("message", e.getMessage()));
+            response.put("count", 0);
         }
         return response;
     }
@@ -84,6 +90,17 @@ public class UserService implements IUserService{
     @Override
     public UserDTO delete(UUID id) {
         return null;
+    }
+
+    private UserDTO setUserDto(User user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setName(user.getName());
+        userDTO.setSurname(user.getSurname());
+        userDTO.setDni(user.getDni());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setPhone(user.getPhone());
+        return userDTO;
     }
 
 
