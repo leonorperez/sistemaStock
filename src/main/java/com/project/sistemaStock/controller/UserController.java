@@ -71,14 +71,11 @@ public class UserController {
     @DeleteMapping("/user/{id}")
     public ResponseEntity<?> deleteById(@PathVariable UUID id) {
         try {
-            Optional<User> optionalUser = iUserRepository.findById(id);
-            if (optionalUser.isPresent()) {
-                User user = optionalUser.get();
-                user.setStatus(false);
-                iUserRepository.save(user);
-                return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
+            Map<String,Object> response = iUserService.delete(id);
+            if (response.containsKey("data")) {
+                return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);

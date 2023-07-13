@@ -12,6 +12,6 @@ public interface IUserService {
     public Map<String,Object> getAll();
     public Map<String, Object> getById(UUID id);
     public UserDTO update(UUID id, UserDTO userDTO);
-    public UserDTO delete(UUID id);
+    public Map<String, Object> delete(UUID id);
 
 }
