@@ -84,19 +84,12 @@ public class UserController {
 
     @PutMapping("/user/{id}")
     public ResponseEntity<?> updateUserById(@PathVariable UUID id, @RequestBody UserDTO userDTO) {
-        Optional<User> optionalUser = iUserRepository.findById(id);
         try {
-            if (optionalUser.isPresent()) {
-                User user = optionalUser.get();
-                user.setName(userDTO.getName());
-                user.setSurname(userDTO.getSurname());
-                user.setDni(userDTO.getDni());
-                user.setEmail(userDTO.getEmail());
-                user.setPhone(userDTO.getPhone());
-                iUserRepository.save(user);
-                return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
+            Map<String,Object> response = iUserService.update(id, userDTO);
+            if (response.containsKey("data")) {
+                return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);

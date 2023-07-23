@@ -3,6 +3,8 @@ package com.project.sistemaStock.services;
 import com.project.sistemaStock.dto.UserDTO;
 import com.project.sistemaStock.model.User;
 import com.project.sistemaStock.repository.IUserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -83,8 +85,28 @@ public class UserService implements IUserService {
 
 
     @Override
-    public UserDTO update(UUID id, UserDTO userDTO) {
-        return null;
+    public Map<String, Object> update(UUID id, UserDTO userDTO) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Optional<User> optionalUser = iUserRepository.findById(id);
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                setUser(userDTO, user);
+                iUserRepository.save(user);
+                UserDTO UresponseUserDTO = setUserDto(user);
+                response.put("errors", Collections.singletonMap("message", null));
+                response.put("data", UresponseUserDTO);
+                response.put("result: ", "User updated successfully");
+            } else {
+                response.put("errors", Collections.singletonMap("message", null));
+                response.put("data", userDTO);
+                response.put("result: ", "User not found");
+            }
+        } catch (Exception e) {
+            response.put("errors", Collections.singletonMap("message", e.getMessage()));
+            response.put("count", 0);
+        }
+        return response;
     }
 
     @Override
@@ -127,6 +149,27 @@ public class UserService implements IUserService {
         userDTO.setEmail(user.getEmail());
         userDTO.setPhone(user.getPhone());
         return userDTO;
+    }
+
+    private void setUser(UserDTO userDTO, User user) {
+        if (userDTO.getName() != null) {
+            user.setName(userDTO.getName());
+        }
+        if (userDTO.getName() != null) {
+            user.setName(userDTO.getName());
+        }
+        if (userDTO.getSurname() != null) {
+            user.setSurname(userDTO.getSurname());
+        }
+        if (userDTO.getDni() != null) {
+            user.setDni(userDTO.getDni());
+        }
+        if (userDTO.getEmail() != null) {
+            user.setEmail(userDTO.getEmail());
+        }
+        if (userDTO.getPhone() != null) {
+            user.setPhone(userDTO.getPhone());
+        }
     }
 
 
