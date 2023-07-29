@@ -4,7 +4,11 @@ package com.project.sistemaStock.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.UUID;
 
 
@@ -26,11 +30,10 @@ public class User {
         this.status = true;
     }
 
-
     @Id
-    @Column(name = "id")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
-
     @Column(name="name", nullable = false, length = 200)
     private String name;
 

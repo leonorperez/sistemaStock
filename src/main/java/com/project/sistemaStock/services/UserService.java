@@ -24,7 +24,6 @@ public class UserService implements IUserService {
         Map<String, Object> response = new HashMap<>();
         try {
             User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getEmail(), user.getPhone(), passwordEncoder().encode(user.getPassword()));
-            newUser.setId(UUID.fromString(UUID.randomUUID().toString()));
             newUser = iUserRepository.save(newUser);
             UserDTO userDTO = setUserDto(newUser);
 
