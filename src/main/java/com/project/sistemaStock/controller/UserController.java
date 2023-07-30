@@ -4,16 +4,14 @@ import com.project.sistemaStock.dto.UserDTO;
 import com.project.sistemaStock.model.User;
 import com.project.sistemaStock.repository.IUserRepository;
 import com.project.sistemaStock.services.IUserService;
-import com.project.sistemaStock.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-
-import static com.project.sistemaStock.security.WebSecurityConfig.passwordEncoder;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -28,18 +26,19 @@ public class UserController {
     @PostMapping(value = "/user/new")
     public ResponseEntity<?> save(@RequestBody User user) {
         try {
-            Map<String,Object> response = iUserService.create(user);
+            Map<String, Object> response = iUserService.create(user);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getUserById(@PathVariable String id) {
         try {
             UUID uuid = UUID.fromString(id); // Intenta convertir la cadena a UUID
 
-            Map<String,Object> response = iUserService.getById(uuid);
+            Map<String, Object> response = iUserService.getById(uuid);
 
             if (response.containsKey("data")) {
                 return new ResponseEntity<>(response, HttpStatus.OK);
@@ -54,7 +53,7 @@ public class UserController {
     @GetMapping(value = "/users")
     public ResponseEntity<?> listUsers() {
         try {
-            Map<String,Object> response = iUserService.getAll();
+            Map<String, Object> response = iUserService.getAll();
 
             if (response.containsKey("data")) {
                 return new ResponseEntity<>(response, HttpStatus.OK);
@@ -71,7 +70,7 @@ public class UserController {
     @DeleteMapping("/user/{id}")
     public ResponseEntity<?> deleteById(@PathVariable UUID id) {
         try {
-            Map<String,Object> response = iUserService.delete(id);
+            Map<String, Object> response = iUserService.delete(id);
             if (response.containsKey("data")) {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
@@ -85,7 +84,7 @@ public class UserController {
     @PutMapping("/user/{id}")
     public ResponseEntity<?> updateUserById(@PathVariable UUID id, @RequestBody UserDTO userDTO) {
         try {
-            Map<String,Object> response = iUserService.update(id, userDTO);
+            Map<String, Object> response = iUserService.update(id, userDTO);
             if (response.containsKey("data")) {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
