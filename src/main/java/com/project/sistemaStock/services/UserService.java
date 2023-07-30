@@ -3,8 +3,6 @@ package com.project.sistemaStock.services;
 import com.project.sistemaStock.dto.UserDTO;
 import com.project.sistemaStock.model.User;
 import com.project.sistemaStock.repository.IUserRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,7 +22,6 @@ public class UserService implements IUserService {
         Map<String, Object> response = new HashMap<>();
         try {
             User newUser = new User(user.getName(), user.getSurname(), user.getDni(), user.getEmail(), user.getPhone(), passwordEncoder().encode(user.getPassword()));
-            newUser.setId(UUID.fromString(UUID.randomUUID().toString()));
             newUser = iUserRepository.save(newUser);
             UserDTO userDTO = setUserDto(newUser);
 
