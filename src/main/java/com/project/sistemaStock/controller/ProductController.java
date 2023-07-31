@@ -1,40 +1,40 @@
 package com.project.sistemaStock.controller;
 
-import com.project.sistemaStock.dto.UserDTO;
-import com.project.sistemaStock.model.User;
-import com.project.sistemaStock.repository.IUserRepository;
-import com.project.sistemaStock.services.IUserService;
+import com.project.sistemaStock.model.Product;
+import com.project.sistemaStock.repository.IProductRepository;
+import com.project.sistemaStock.services.IProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
 @AllArgsConstructor
-public class UserController {
+public class ProductController {
     @Autowired
-    private final IUserRepository iUserRepository;
+    private final IProductRepository iProductRepository;
 
-    private final IUserService iUserService;
+    private final IProductService iProductService;
 
 
-    @PostMapping(value = "/user/new")
-    public ResponseEntity<?> save(@RequestBody User user) {
-        System.out.println("paso x save new user");
+    @PostMapping(value = "/product/new")
+    public ResponseEntity<?> save(@RequestBody Product product) {
+
         try {
-            Map<String, Object> response = iUserService.create(user);
+           Map<String, Object> response = iProductService.create(product);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
 
-    @GetMapping("/user/{id}")
+    /*@GetMapping("/user/{id}")
     public ResponseEntity<?> getUserById(@PathVariable String id) {
         try {
             UUID uuid = UUID.fromString(id); // Intenta convertir la cadena a UUID
@@ -95,4 +95,6 @@ public class UserController {
             return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+     */
 }
