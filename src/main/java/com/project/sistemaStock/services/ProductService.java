@@ -1,13 +1,11 @@
 package com.project.sistemaStock.services;
 
+import com.project.sistemaStock.dto.ProductDTO;
 import com.project.sistemaStock.model.Product;
 import com.project.sistemaStock.repository.IProductRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ProductService implements IProductService {
@@ -35,41 +33,21 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Map<String, Object> getAll() {
-        return null;
-    }
-
-    @Override
-    public Map<String, Object> getById(UUID id) {
-        return null;
-    }
-
-    @Override
-    public Map<String, Object> update(UUID id, Product product) {
-        return null;
-    }
-
-    @Override
-    public Map<String, Object> delete(UUID id) {
-        return null;
-    }
-
-    /*@Override
     public Map<String, Object> getById(UUID id) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Optional<User> optionalUser = iUserRepository.findById(id);
+            Optional<Product> optionalProduct = iProductRepository.findById(id);
 
-            if (optionalUser.isPresent()) {
-                User user = optionalUser.get();
+            if (optionalProduct.isPresent()) {
+                Product product = optionalProduct.get();
 
-                UserDTO userDTO = setUserDto(user);
+                ProductDTO productDTO = setProductDto(product);
 
                 response.put("errors", Collections.singletonMap("message", null));
-                response.put("data", userDTO);
+                response.put("data", product);
 
             } else {
-                response.put("errors", Collections.singletonMap("message", "Usuario Inexistente"));
+                response.put("errors", Collections.singletonMap("message", "producto Inexistente"));
             }
         } catch (Exception e) {
             response.put("errors", Collections.singletonMap("message", e.getMessage()));
@@ -82,16 +60,16 @@ public class ProductService implements IProductService {
     public Map<String, Object> getAll() {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<User> users = iUserRepository.findAllByStatus(true);
+            List<Product> products = iProductRepository.findAllByStatus(true);
 
-            List<UserDTO> userDTOS = new ArrayList<>();
-            for (User user : users) {
-                UserDTO userDTO = setUserDto(user);
-                userDTOS.add(userDTO);
+            List<ProductDTO> listProductDTO = new ArrayList<>();
+            for (Product product : products) {
+                ProductDTO productDTO = setProductDto(product);
+                listProductDTO.add(productDTO);
             }
             response.put("errors", Collections.singletonMap("message", null));
-            response.put("data", userDTOS);
-            response.put("count", userDTOS.size());
+            response.put("data", listProductDTO);
+            response.put("count", listProductDTO.size());
         } catch (Exception e) {
             response.put("errors", Collections.singletonMap("message", e.getMessage()));
             response.put("count", 0);
@@ -99,23 +77,22 @@ public class ProductService implements IProductService {
         return response;
     }
 
-
     @Override
-    public Map<String, Object> update(UUID id, Product product) {
+    public Map<String, Object> update(UUID id, ProductDTO productDTO) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Optional<User> optionalUser = iUserRepository.findById(id);
-            if (optionalUser.isPresent()) {
-                User user = optionalUser.get();
-                setUser(userDTO, user);
-                iUserRepository.save(user);
-                UserDTO UresponseUserDTO = setUserDto(user);
+            Optional<Product> optionalProduct = iProductRepository.findById(id);
+            if (optionalProduct.isPresent()) {
+                Product product = optionalProduct.get();
+                setProduct(productDTO, product);
+                iProductRepository.save(product);
+                ProductDTO responseProductDTO = setProductDto(product);
                 response.put("errors", Collections.singletonMap("message", null));
-                response.put("data", UresponseUserDTO);
+                response.put("data", responseProductDTO);
                 response.put("result: ", "User updated successfully");
             } else {
                 response.put("errors", Collections.singletonMap("message", null));
-                response.put("data", userDTO);
+                response.put("data", productDTO);
                 response.put("result: ", "User not found");
             }
         } catch (Exception e) {
@@ -129,22 +106,22 @@ public class ProductService implements IProductService {
     public Map<String, Object> delete(UUID id) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Optional<User> optionalUser = iUserRepository.findById(id);
+            Optional<Product> optionalProduct = iProductRepository.findById(id);
 
-            if (optionalUser.isPresent()) {
-                User user = optionalUser.get();
-                user.setStatus(false);
-                iUserRepository.save(user);
-                UserDTO userDTO = setUserDto(user);
+            if (optionalProduct.isPresent()) {
+                Product product = optionalProduct.get();
+                product.setStatus(false);
+                iProductRepository.save(product);
+                ProductDTO productDTO = setProductDto(product);
 
 
                 response.put("errors", Collections.singletonMap("message", null));
-                response.put("data", userDTO);
-                response.put("result: ", "User delete successfully");
+                response.put("data", productDTO);
+                response.put("result: ", "Product delete successfully");
 
             } else {
                 response.put("errors", Collections.singletonMap("message", null));
-                response.put("data", optionalUser);
+                response.put("data", optionalProduct);
                 response.put("result: ", "User not found");
             }
 
@@ -156,41 +133,30 @@ public class ProductService implements IProductService {
 
     }
 
-    private UserDTO setUserDto(User user) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setName(user.getName());
-        userDTO.setSurname(user.getSurname());
-        userDTO.setDni(user.getDni());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setPhone(user.getPhone());
-        return userDTO;
-    }
-
-    private void setUser(UserDTO userDTO, User user) {
-        if (userDTO.getName() != null) {
-            user.setName(userDTO.getName());
+    private void setProduct(ProductDTO productDTO, Product product) {
+        if (productDTO.getName() != null) {
+            product.setName(productDTO.getName());
         }
-        if (userDTO.getName() != null) {
-            user.setName(userDTO.getName());
+        if (productDTO.getCode() != null) {
+            product.setCode(productDTO.getCode());
         }
-        if (userDTO.getSurname() != null) {
-            user.setSurname(userDTO.getSurname());
+        if (productDTO.getPrice() != null) {
+            product.setPrice(productDTO.getPrice());
         }
-        if (userDTO.getDni() != null) {
-            user.setDni(userDTO.getDni());
-        }
-        if (userDTO.getEmail() != null) {
-            user.setEmail(userDTO.getEmail());
-        }
-        if (userDTO.getPhone() != null) {
-            user.setPhone(userDTO.getPhone());
+        if (productDTO.getQuantity() != 0) {
+            product.setQuantity(productDTO.getQuantity());
         }
     }
 
-     */
+    private ProductDTO setProductDto(Product product) {
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(product.getId());
+        productDTO.setName(product.getName());
+        productDTO.setCode(product.getCode());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setQuantity(product.getQuantity());
 
-
-
+        return productDTO;
+    }
 
 }
