@@ -21,6 +21,14 @@ public class Sale {
 
     }
 
+    public Sale(LocalDateTime date, int quantity, BigDecimal value, BigDecimal total) {
+        this.date = date;
+        this.quantity = quantity;
+        this.value = value;
+        this.total = total;
+        this.status = true;
+    }
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")

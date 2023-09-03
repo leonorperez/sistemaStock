@@ -152,9 +152,6 @@ public class UserService implements IUserService {
         if (userDTO.getName() != null) {
             user.setName(userDTO.getName());
         }
-        if (userDTO.getName() != null) {
-            user.setName(userDTO.getName());
-        }
         if (userDTO.getSurname() != null) {
             user.setSurname(userDTO.getSurname());
         }

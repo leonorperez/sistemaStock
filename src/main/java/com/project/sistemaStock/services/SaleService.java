@@ -1,5 +1,6 @@
 package com.project.sistemaStock.services;
 
+import com.project.sistemaStock.dto.SaleDTO;
 import com.project.sistemaStock.dto.UserDTO;
 import com.project.sistemaStock.model.Sale;
 import com.project.sistemaStock.model.User;
@@ -23,8 +24,10 @@ public class SaleService implements ISaleService {
     @Override
     public Map<String, Object> create(Sale sale) {
         Map<String, Object> response = new HashMap<>();
+        System.out.println(sale);
         try {
-            Sale newSale = iSaleRepository.save(sale);
+            Sale newSale = new Sale(sale.getDate(),sale.getQuantity(), sale.getTotal(),sale.getValue());
+            newSale = iSaleRepository.save(newSale);
             response.put("errors", Collections.singletonMap("message", null));
             response.put("data", newSale);
         } catch (Exception e) {
@@ -60,14 +63,14 @@ public class SaleService implements ISaleService {
         try {
             List<Sale> sales = iSaleRepository.findAllByStatus(true);
 
-//            List<UserDTO> userDTOS = new ArrayList<>();
-//            for (Sale sale : sales) {
-//                UserDTO userDTO = setUserDto(user);
-//                userDTOS.add(userDTO);
-//            }
+            List<SaleDTO> listSaleDTO = new ArrayList<>();
+            for (Sale sale : sales) {
+                SaleDTO saleDto = setSaleDto(sale);
+                listSaleDTO.add(saleDto);
+            }
             response.put("errors", Collections.singletonMap("message", null));
-            response.put("data", sales);
-            response.put("count", sales.size());
+            response.put("data", listSaleDTO);
+            response.put("count", listSaleDTO.size());
         } catch (Exception e) {
             response.put("errors", Collections.singletonMap("message", e.getMessage()));
             response.put("count", 0);
@@ -84,4 +87,16 @@ public class SaleService implements ISaleService {
     public Map<String, Object> delete(UUID id) {
         return null;
     }
+
+
+    private SaleDTO setSaleDto(Sale sale) {
+        SaleDTO saleDTO = new SaleDTO();
+        saleDTO.setId(sale.getId());
+        saleDTO.setDate(sale.getDate());
+        saleDTO.setQuantity(sale.getQuantity());
+        saleDTO.setValue(sale.getValue());
+        saleDTO.setTotal(sale.getTotal());
+        return saleDTO;
+    }
+
 }
