@@ -25,7 +25,6 @@ public class UserController {
 
     @PostMapping(value = "/user/new")
     public ResponseEntity<?> save(@RequestBody User user) {
-        System.out.println("paso x save new user");
         try {
             Map<String, Object> response = iUserService.create(user);
             return ResponseEntity.ok(response);
