@@ -79,13 +79,54 @@ public class SaleService implements ISaleService {
     }
 
     @Override
-    public Map<String, Object> update(UUID id, Sale sale) {
-        return null;
+    public Map<String, Object> update(UUID id, SaleDTO saleDTO) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Optional<Sale> optionalSale = iSaleRepository.findById(id);
+            if (optionalSale.isPresent()) {
+                Sale sale = optionalSale.get();
+                setSale(saleDTO, sale);
+                iSaleRepository.save(sale);
+                SaleDTO responseSaleDTO = setSaleDto(sale);
+                response.put("errors", Collections.singletonMap("message", null));
+                response.put("data", responseSaleDTO);
+                response.put("result: ", "Sale updated successfully");
+            } else {
+                response.put("errors", Collections.singletonMap("message", null));
+                response.put("data", saleDTO);
+                response.put("result: ", "Sale not found");
+            }
+        } catch (Exception e) {
+            response.put("errors", Collections.singletonMap("message", e.getMessage()));
+            response.put("count", 0);
+        }
+        return response;
     }
 
     @Override
     public Map<String, Object> delete(UUID id) {
-        return null;
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Optional<Sale> optionalSale = iSaleRepository.findById(id);
+            if (optionalSale.isPresent()) {
+                Sale sale = optionalSale.get();
+                sale.setStatus(false);
+                iSaleRepository.save(sale);
+                SaleDTO saleDTO = setSaleDto(sale);
+
+                response.put("errors", Collections.singletonMap("message", null));
+                response.put("data", saleDTO);
+                response.put("result: ", "Sale delete successfully");
+            } else {
+                response.put("errors", Collections.singletonMap("message", null));
+                response.put("data", optionalSale);
+                response.put("result: ", "Sale not found");
+            }
+        } catch (Exception e) {
+            response.put("errors", Collections.singletonMap("message", e.getMessage()));
+            response.put("count", 0);
+        }
+        return response;
     }
 
 
@@ -97,6 +138,21 @@ public class SaleService implements ISaleService {
         saleDTO.setValue(sale.getValue());
         saleDTO.setTotal(sale.getTotal());
         return saleDTO;
+    }
+
+    private void setSale(SaleDTO saleDTO, Sale sale) {
+        if (saleDTO.getQuantity() > 0) {
+            sale.setQuantity(saleDTO.getQuantity());
+        }
+        if (saleDTO.getDate() != null) {
+            sale.setDate(saleDTO.getDate());
+        }
+        if (saleDTO.getValue() != null) {
+            sale.setValue(saleDTO.getValue());
+        }
+        if (saleDTO.getTotal() != null) {
+            sale.setTotal(saleDTO.getTotal());
+        }
     }
 
 }

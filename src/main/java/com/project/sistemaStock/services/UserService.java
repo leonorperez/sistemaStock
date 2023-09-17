@@ -90,9 +90,9 @@ public class UserService implements IUserService {
                 User user = optionalUser.get();
                 setUser(userDTO, user);
                 iUserRepository.save(user);
-                UserDTO UresponseUserDTO = setUserDto(user);
+                UserDTO responseUserDTO = setUserDto(user);
                 response.put("errors", Collections.singletonMap("message", null));
-                response.put("data", UresponseUserDTO);
+                response.put("data", responseUserDTO);
                 response.put("result: ", "User updated successfully");
             } else {
                 response.put("errors", Collections.singletonMap("message", null));
@@ -111,30 +111,25 @@ public class UserService implements IUserService {
         Map<String, Object> response = new HashMap<>();
         try {
             Optional<User> optionalUser = iUserRepository.findById(id);
-
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
                 user.setStatus(false);
                 iUserRepository.save(user);
                 UserDTO userDTO = setUserDto(user);
 
-
                 response.put("errors", Collections.singletonMap("message", null));
                 response.put("data", userDTO);
                 response.put("result: ", "User delete successfully");
-
             } else {
                 response.put("errors", Collections.singletonMap("message", null));
                 response.put("data", optionalUser);
                 response.put("result: ", "User not found");
             }
-
         } catch (Exception e) {
             response.put("errors", Collections.singletonMap("message", e.getMessage()));
             response.put("count", 0);
         }
         return response;
-
     }
 
     private UserDTO setUserDto(User user) {
