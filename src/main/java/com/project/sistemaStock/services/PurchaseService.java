@@ -1,7 +1,6 @@
 package com.project.sistemaStock.services;
 
 import com.project.sistemaStock.repository.IPurchaseRepository;
-import com.project.sistemaStock.repository.ISaleRepository;
 import org.springframework.stereotype.Service;
 
 
@@ -9,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class PurchaseService {
     private final IPurchaseRepository iPurchaseRepository;
 
-    public SaleService(IPurchaseRepository iPurchaseRepository) {
+    public PurchaseService(IPurchaseRepository iPurchaseRepository) {
         this.iPurchaseRepository = iPurchaseRepository;
     }
 }
