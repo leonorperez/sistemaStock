@@ -59,6 +59,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         } else if (method.equals("POST")) {
             return  requestURI.equals("/api/sale/new")  ||
                     requestURI.equals("/api/user/new") ||
+                    requestURI.equals("/api/purchase/new") ||
                     requestURI.equals("/api/login")||
                     requestURI.equals("/api/product/new");
         } else if (method.equals("PUT") || method.equals("DELETE")) {

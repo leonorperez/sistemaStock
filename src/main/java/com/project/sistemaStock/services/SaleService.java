@@ -1,16 +1,11 @@
 package com.project.sistemaStock.services;
 
 import com.project.sistemaStock.dto.SaleDTO;
-import com.project.sistemaStock.dto.UserDTO;
 import com.project.sistemaStock.model.Sale;
-import com.project.sistemaStock.model.User;
 import com.project.sistemaStock.repository.ISaleRepository;
-import com.project.sistemaStock.repository.IUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
-import static com.project.sistemaStock.security.WebSecurityConfig.passwordEncoder;
 
 @Service
 public class SaleService implements ISaleService {

@@ -1,12 +1,9 @@
 package com.project.sistemaStock.controller;
 
 import com.project.sistemaStock.dto.SaleDTO;
-import com.project.sistemaStock.dto.UserDTO;
 import com.project.sistemaStock.model.Sale;
-import com.project.sistemaStock.repository.ISaleRepository;
 import com.project.sistemaStock.services.ISaleService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class SaleController {
 
-    @Autowired
-    private final ISaleRepository iSaleRepository;
-
     private final ISaleService iSaleService;
-
 
     @PostMapping(value = "/sale/new")
     public ResponseEntity<?> save(@RequestBody Sale sale) {
