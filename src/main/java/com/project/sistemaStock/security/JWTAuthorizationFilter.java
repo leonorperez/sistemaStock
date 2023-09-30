@@ -54,16 +54,19 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         if (method.equals("GET")) {
             // Permitir URLs que comiencen con "/api/user/" y tengan un identificador UUID al final
             return requestURI.matches("/api/sale/\\w+-\\w+-\\w+-\\w+-\\w+") ||  requestURI.matches("/api/sales") ||
+                    requestURI.matches("/api/purchase/\\w+-\\w+-\\w+-\\w+-\\w+") ||  requestURI.matches("/api/purchases") ||
                     requestURI.matches("/api/user/\\w+-\\w+-\\w+-\\w+-\\w+") || requestURI.matches("/api/users") ||
                     requestURI.matches("/api/product/\\w+-\\w+-\\w+-\\w+-\\w+") || requestURI.matches("/api/products");
         } else if (method.equals("POST")) {
             return  requestURI.equals("/api/sale/new")  ||
                     requestURI.equals("/api/user/new") ||
+                    requestURI.equals("/api/purchase/new") ||
                     requestURI.equals("/api/login")||
                     requestURI.equals("/api/product/new");
         } else if (method.equals("PUT") || method.equals("DELETE")) {
             // Permitir URLs que comiencen con "/api/user/" y tengan un identificador UUID al final
             return requestURI.matches("/api/sale/\\w+-\\w+-\\w+-\\w+-\\w+") ||
+                    requestURI.matches("/api/purchase/\\w+-\\w+-\\w+-\\w+-\\w+") ||
                     requestURI.matches("/api/user/\\w+-\\w+-\\w+-\\w+-\\w+") ||
                     requestURI.matches("/api/user/\\w+-\\w+-\\w+-\\w+-\\w+/.*")||
                     requestURI.matches("/api/product/\\w+-\\w+-\\w+-\\w+-\\w+")||

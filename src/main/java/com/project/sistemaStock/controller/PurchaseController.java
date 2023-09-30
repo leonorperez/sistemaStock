@@ -1,8 +1,8 @@
 package com.project.sistemaStock.controller;
 
-import com.project.sistemaStock.dto.SaleDTO;
-import com.project.sistemaStock.model.Sale;
-import com.project.sistemaStock.services.ISaleService;
+import com.project.sistemaStock.dto.PurchaseDTO;
+import com.project.sistemaStock.model.Purchase;
+import com.project.sistemaStock.services.IPurchaseService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,24 +14,24 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api")
 @AllArgsConstructor
-public class SaleController {
+public class PurchaseController {
 
-    private final ISaleService iSaleService;
+    private final IPurchaseService iPurchaseService;
 
-    @PostMapping(value = "/sale/new")
-    public ResponseEntity<?> save(@RequestBody Sale sale) {
+    @PostMapping(value = "/purchase/new")
+    public ResponseEntity<?> save(@RequestBody Purchase purchase) {
         try {
-            Map<String, Object> response = iSaleService.create(sale);
+            Map<String, Object> response = iPurchaseService.create(purchase);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
 
-    @GetMapping(value = "/sales")
-    public ResponseEntity<?> listSales() {
+    @GetMapping(value = "/purchases")
+    public ResponseEntity<?> listPurchases() {
         try {
-            Map<String, Object> response = iSaleService.getAll();
+            Map<String, Object> response = iPurchaseService.getAll();
 
             if (response.containsKey("data")) {
                 return new ResponseEntity<>(response, HttpStatus.OK);
@@ -44,12 +44,12 @@ public class SaleController {
 
     }
 
-    @GetMapping("/sale/{id}")
-    public ResponseEntity<?> getSaleById(@PathVariable String id) {
+    @GetMapping("/purchase/{id}")
+    public ResponseEntity<?> getPurchaseById(@PathVariable String id) {
         try {
-            UUID uuid = UUID.fromString(id); // Intenta convertir la cadena a UUID
+            UUID uuid = UUID.fromString(id);
 
-            Map<String, Object> response = iSaleService.getById(uuid);
+            Map<String, Object> response = iPurchaseService.getById(uuid);
 
             if (response.containsKey("data")) {
                 return new ResponseEntity<>(response, HttpStatus.OK);
@@ -61,10 +61,11 @@ public class SaleController {
         }
     }
 
-    @PutMapping("/sale/{id}")
-    public ResponseEntity<?> updateSaleById(@PathVariable UUID id, @RequestBody SaleDTO saleDTO) {
+
+    @PutMapping("/purchase/{id}")
+    public ResponseEntity<?> updatePurchaseById(@PathVariable UUID id, @RequestBody PurchaseDTO purchaseDTO) {
         try {
-            Map<String, Object> response = iSaleService.update(id, saleDTO);
+            Map<String, Object> response = iPurchaseService.update(id, purchaseDTO);
             if (response.containsKey("data")) {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
@@ -75,10 +76,10 @@ public class SaleController {
         }
     }
 
-    @DeleteMapping("/sale/{id}")
+    @DeleteMapping("/purchase/{id}")
     public ResponseEntity<?> deleteById(@PathVariable UUID id) {
         try {
-            Map<String, Object> response = iSaleService.delete(id);
+            Map<String, Object> response = iPurchaseService.delete(id);
             if (response.containsKey("data")) {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
@@ -88,4 +89,6 @@ public class SaleController {
             return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 }
+
