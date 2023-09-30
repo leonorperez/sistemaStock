@@ -65,7 +65,7 @@ public class PurchaseService implements IPurchaseService {
                 response.put("data", purchase);
 
             } else {
-                response.put("errors", Collections.singletonMap("message", "Venta inexistente"));
+                response.put("errors", Collections.singletonMap("message", "Compra inexistente"));
             }
         } catch (Exception e) {
             response.put("errors", Collections.singletonMap("message", e.getMessage()));
@@ -76,12 +76,53 @@ public class PurchaseService implements IPurchaseService {
 
     @Override
     public Map<String, Object> update(UUID id, PurchaseDTO purchaseDTO) {
-        return null;
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Optional<Purchase> optionalPurchase = iPurchaseRepository.findById(id);
+            if (optionalPurchase.isPresent()) {
+                Purchase purchase = optionalPurchase.get();
+                setPurchase(purchaseDTO, purchase);
+                iPurchaseRepository.save(purchase);
+                PurchaseDTO responsePurchaseDTO = setPurchaseDto(purchase);
+                response.put("errors", Collections.singletonMap("message", null));
+                response.put("data", responsePurchaseDTO);
+                response.put("result: ", "Purchase updated successfully");
+            } else {
+                response.put("errors", Collections.singletonMap("message", null));
+                response.put("data", purchaseDTO);
+                response.put("result: ", "Purchase not found");
+            }
+        } catch (Exception e) {
+            response.put("errors", Collections.singletonMap("message", e.getMessage()));
+            response.put("count", 0);
+        }
+        return response;
     }
 
     @Override
     public Map<String, Object> delete(UUID id) {
-        return null;
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Optional<Purchase> optionalPurchase = iPurchaseRepository.findById(id);
+            if (optionalPurchase.isPresent()) {
+                Purchase purchase = optionalPurchase.get();
+                purchase.setStatus(false);
+                iPurchaseRepository.save(purchase);
+                PurchaseDTO purchaseDTO = setPurchaseDto(purchase);
+
+                response.put("errors", Collections.singletonMap("message", null));
+                response.put("data", purchaseDTO);
+                response.put("result: ", "Purchase delete successfully");
+            } else {
+                response.put("errors", Collections.singletonMap("message", null));
+                response.put("data", optionalPurchase);
+                response.put("result: ", "Purchase not found");
+            }
+        } catch (Exception e) {
+            response.put("errors", Collections.singletonMap("message", e.getMessage()));
+            response.put("count", 0);
+        }
+        return response;
     }
 
     private PurchaseDTO setPurchaseDto(Purchase purchase) {

@@ -1,5 +1,6 @@
 package com.project.sistemaStock.controller;
 
+import com.project.sistemaStock.dto.PurchaseDTO;
 import com.project.sistemaStock.model.Purchase;
 import com.project.sistemaStock.services.IPurchaseService;
 import lombok.AllArgsConstructor;
@@ -28,7 +29,7 @@ public class PurchaseController {
     }
 
     @GetMapping(value = "/purchases")
-    public ResponseEntity<?> listSales() {
+    public ResponseEntity<?> listPurchases() {
         try {
             Map<String, Object> response = iPurchaseService.getAll();
 
@@ -44,7 +45,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/purchase/{id}")
-    public ResponseEntity<?> getSaleById(@PathVariable String id) {
+    public ResponseEntity<?> getPurchaseById(@PathVariable String id) {
         try {
             UUID uuid = UUID.fromString(id);
 
@@ -61,9 +62,33 @@ public class PurchaseController {
     }
 
 
+    @PutMapping("/purchase/{id}")
+    public ResponseEntity<?> updatePurchaseById(@PathVariable UUID id, @RequestBody PurchaseDTO purchaseDTO) {
+        try {
+            Map<String, Object> response = iPurchaseService.update(id, purchaseDTO);
+            if (response.containsKey("data")) {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
-
-
+    @DeleteMapping("/purchase/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable UUID id) {
+        try {
+            Map<String, Object> response = iPurchaseService.delete(id);
+            if (response.containsKey("data")) {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }
 
