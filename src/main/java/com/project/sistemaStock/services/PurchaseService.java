@@ -55,7 +55,23 @@ public class PurchaseService implements IPurchaseService {
 
     @Override
     public Map<String, Object> getById(UUID id) {
-        return null;
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Optional<Purchase> optionalPurchase = iPurchaseRepository.findById(id);
+
+            if (optionalPurchase.isPresent()) {
+                Purchase purchase = optionalPurchase.get();
+                response.put("errors", Collections.singletonMap("message", null));
+                response.put("data", purchase);
+
+            } else {
+                response.put("errors", Collections.singletonMap("message", "Venta inexistente"));
+            }
+        } catch (Exception e) {
+            response.put("errors", Collections.singletonMap("message", e.getMessage()));
+
+        }
+        return response;
     }
 
     @Override
