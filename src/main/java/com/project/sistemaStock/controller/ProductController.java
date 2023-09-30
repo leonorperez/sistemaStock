@@ -17,11 +17,8 @@ import java.util.UUID;
 @RequestMapping("/api")
 @AllArgsConstructor
 public class ProductController {
-    @Autowired
-    private final IProductRepository iProductRepository;
 
     private final IProductService iProductService;
-
 
     @PostMapping(value = "/product/new")
     public ResponseEntity<?> save(@RequestBody Product product) {

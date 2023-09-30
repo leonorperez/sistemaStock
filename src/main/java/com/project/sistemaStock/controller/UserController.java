@@ -2,10 +2,8 @@ package com.project.sistemaStock.controller;
 
 import com.project.sistemaStock.dto.UserDTO;
 import com.project.sistemaStock.model.User;
-import com.project.sistemaStock.repository.IUserRepository;
 import com.project.sistemaStock.services.IUserService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +15,6 @@ import java.util.UUID;
 @RequestMapping("/api")
 @AllArgsConstructor
 public class UserController {
-    @Autowired
-    private final IUserRepository iUserRepository;
 
     private final IUserService iUserService;
 

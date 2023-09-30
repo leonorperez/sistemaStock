@@ -47,7 +47,7 @@ public class ProductService implements IProductService {
                 response.put("data", product);
 
             } else {
-                response.put("errors", Collections.singletonMap("message", "producto Inexistente"));
+                response.put("errors", Collections.singletonMap("message", "Producto Inexistente"));
             }
         } catch (Exception e) {
             response.put("errors", Collections.singletonMap("message", e.getMessage()));

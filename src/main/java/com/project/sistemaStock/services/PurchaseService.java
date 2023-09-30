@@ -1,9 +1,7 @@
 package com.project.sistemaStock.services;
 
 import com.project.sistemaStock.dto.PurchaseDTO;
-import com.project.sistemaStock.dto.SaleDTO;
 import com.project.sistemaStock.model.Purchase;
-import com.project.sistemaStock.model.Sale;
 import com.project.sistemaStock.repository.IPurchaseRepository;
 import org.springframework.stereotype.Service;
 

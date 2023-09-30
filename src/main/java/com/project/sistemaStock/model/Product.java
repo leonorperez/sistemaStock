@@ -23,10 +23,13 @@ public class Product {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
+
     @Column(name = "code", nullable = false, length = 200)
     private String code;
+
     @Column(name = "name", nullable = false, length = 200)
     private String name;
+
     @Column(name = "quantity")
     @ColumnDefault("0")
     private int quantity;
