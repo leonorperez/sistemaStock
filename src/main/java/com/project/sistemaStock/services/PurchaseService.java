@@ -1,14 +1,13 @@
 package com.project.sistemaStock.services;
 
 import com.project.sistemaStock.dto.PurchaseDTO;
+import com.project.sistemaStock.dto.SaleDTO;
 import com.project.sistemaStock.model.Purchase;
+import com.project.sistemaStock.model.Sale;
 import com.project.sistemaStock.repository.IPurchaseRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -23,7 +22,7 @@ public class PurchaseService implements IPurchaseService {
     public Map<String, Object> create(Purchase purchase) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Purchase newPurchase = new Purchase(purchase.getDate(),purchase.getQuantity(), purchase.getTotal(),purchase.getValue());
+            Purchase newPurchase = new Purchase(purchase.getDate(), purchase.getQuantity(), purchase.getTotal(), purchase.getValue());
             newPurchase = iPurchaseRepository.save(newPurchase);
             response.put("errors", Collections.singletonMap("message", null));
             response.put("data", newPurchase);
@@ -35,7 +34,23 @@ public class PurchaseService implements IPurchaseService {
 
     @Override
     public Map<String, Object> getAll() {
-        return null;
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Purchase> purchases = iPurchaseRepository.findAllByStatus(true);
+
+            List<PurchaseDTO> listPurchaseDTO = new ArrayList<>();
+            for (Purchase purchase : purchases) {
+                PurchaseDTO purchaseDTO = setPurchaseDto(purchase);
+                listPurchaseDTO.add(purchaseDTO);
+            }
+            response.put("errors", Collections.singletonMap("message", null));
+            response.put("data", listPurchaseDTO);
+            response.put("count", listPurchaseDTO.size());
+        } catch (Exception e) {
+            response.put("errors", Collections.singletonMap("message", e.getMessage()));
+            response.put("count", 0);
+        }
+        return response;
     }
 
     @Override
@@ -52,4 +67,31 @@ public class PurchaseService implements IPurchaseService {
     public Map<String, Object> delete(UUID id) {
         return null;
     }
+
+    private PurchaseDTO setPurchaseDto(Purchase purchase) {
+        PurchaseDTO purchaseDTO = new PurchaseDTO();
+        purchaseDTO.setId(purchase.getId());
+        purchaseDTO.setDate(purchase.getDate());
+        purchaseDTO.setQuantity(purchase.getQuantity());
+        purchaseDTO.setValue(purchase.getValue());
+        purchaseDTO.setTotal(purchase.getTotal());
+        return purchaseDTO;
+    }
+
+    private void setPurchase(PurchaseDTO purchaseDTO, Purchase purchase) {
+        if (purchaseDTO.getQuantity() > 0) {
+            purchase.setQuantity(purchaseDTO.getQuantity());
+        }
+        if (purchaseDTO.getDate() != null) {
+            purchase.setDate(purchaseDTO.getDate());
+        }
+        if (purchaseDTO.getValue() != null) {
+            purchase.setValue(purchaseDTO.getValue());
+        }
+        if (purchaseDTO.getTotal() != null) {
+            purchase.setTotal(purchaseDTO.getTotal());
+        }
+    }
+
+
 }
