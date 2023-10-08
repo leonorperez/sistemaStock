@@ -138,7 +138,7 @@ public class PurchaseService implements IPurchaseService {
         return response;
     }
 
-    private PurchaseDTO setPurchaseDto(Purchase purchase) {
+    public static PurchaseDTO setPurchaseDto(Purchase purchase) {
         PurchaseDTO purchaseDTO = new PurchaseDTO();
         purchaseDTO.setId(purchase.getId());
         purchaseDTO.setDate(purchase.getDate());
