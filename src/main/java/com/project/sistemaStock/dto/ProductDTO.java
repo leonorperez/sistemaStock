@@ -1,5 +1,6 @@
 package com.project.sistemaStock.dto;
 
+import com.project.sistemaStock.model.Purchase;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class ProductDTO {
     private String name;
     private int quantity;
     private BigDecimal price;
+    private PurchaseDTO purchaseDTO;
 
 
 }

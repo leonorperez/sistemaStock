@@ -1,6 +1,7 @@
 package com.project.sistemaStock.services;
 
 import com.project.sistemaStock.dto.PurchaseDTO;
+import com.project.sistemaStock.model.Product;
 import com.project.sistemaStock.model.Purchase;
 import com.project.sistemaStock.repository.IPurchaseRepository;
 import org.springframework.stereotype.Service;
@@ -12,28 +13,42 @@ import java.util.*;
 public class PurchaseService implements IPurchaseService {
     private final IPurchaseRepository iPurchaseRepository;
 
+
     public PurchaseService(IPurchaseRepository iPurchaseRepository) {
         this.iPurchaseRepository = iPurchaseRepository;
     }
-
     @Override
     public Map<String, Object> create(Purchase purchase) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Purchase newPurchase = new Purchase(purchase.getDate(), purchase.getQuantity(), purchase.getTotal(), purchase.getValue());
+
+
+            Purchase newPurchase = new Purchase(purchase.getDate(), purchase.getQuantity(), purchase.getTotal(), purchase.getValue(), purchase.getProducts());
+
+            if (newPurchase.getProducts() != null) {
+                for (Product product : newPurchase.getProducts()) {
+                    product.setPurchase(newPurchase);
+                }
+            }
             newPurchase = iPurchaseRepository.save(newPurchase);
+
+            PurchaseDTO purchaseDTO = setPurchaseDto(newPurchase);
+
+
             response.put("errors", Collections.singletonMap("message", null));
-            response.put("data", newPurchase);
+            response.put("data", purchaseDTO);
         } catch (Exception e) {
             response.put("errors", Collections.singletonMap("message", e.getMessage()));
         }
         return response;
     }
 
+
     @Override
     public Map<String, Object> getAll() {
         Map<String, Object> response = new HashMap<>();
         try {
+//            List<Purchase> purchases = iPurchaseRepository.findAllWithProductsAndStatus();
             List<Purchase> purchases = iPurchaseRepository.findAllByStatus(true);
 
             List<PurchaseDTO> listPurchaseDTO = new ArrayList<>();
