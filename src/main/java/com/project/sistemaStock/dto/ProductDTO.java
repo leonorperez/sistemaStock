@@ -19,7 +19,4 @@ public class ProductDTO {
     private String name;
     private int quantity;
     private BigDecimal price;
-    private PurchaseDTO purchaseDTO;
-
-
-}
+ }

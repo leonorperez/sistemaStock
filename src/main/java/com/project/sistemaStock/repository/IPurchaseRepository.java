@@ -13,9 +13,7 @@ public interface IPurchaseRepository  extends JpaRepository<Purchase, Integer> {
 
     List<Purchase> findAllByStatus(boolean status);
 
-
-    //esto aun n o funca
-    @Query("SELECT p, c FROM Product p LEFT JOIN p.purchase c WHERE p.status = true")
-    List<Purchase> findAllWithProductsAndStatus();
+    @Query("SELECT DISTINCT pur FROM Purchase pur JOIN FETCH pur.products pro WHERE pur.status = true")
+    List<Purchase> findAllPurchasesWithProducts();
 
 }

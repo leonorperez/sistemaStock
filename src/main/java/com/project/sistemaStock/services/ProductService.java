@@ -60,8 +60,8 @@ public class ProductService implements IProductService {
     public Map<String, Object> getAll() {
         Map<String, Object> response = new HashMap<>();
         try {
-//            List<Product> products = iProductRepository.findAllByStatus(true);
-            List<Product> products = iProductRepository.findAllWithPurchasesByStatus();
+            List<Product> products = iProductRepository.findAllByStatus(true);
+//            List<Product> products = iProductRepository.findAllWithPurchasesByStatus();
 
             List<ProductDTO> listProductDTO = new ArrayList<>();
             for (Product product : products) {
@@ -149,14 +149,22 @@ public class ProductService implements IProductService {
         }
     }
 
-    private ProductDTO setProductDto(Product product) {
+    public static List<ProductDTO> productsToProductsDto(List<Product> products){
+        List<ProductDTO> productsDTO = new ArrayList<>();
+        products.forEach(product -> {
+            productsDTO.add(setProductDto(product));
+        });
+        return productsDTO;
+    }
+
+    public static ProductDTO setProductDto(Product product) {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setId(product.getId());
         productDTO.setName(product.getName());
         productDTO.setCode(product.getCode());
         productDTO.setPrice(product.getPrice());
         productDTO.setQuantity(product.getQuantity());
-        productDTO.setPurchaseDTO(PurchaseService.setPurchaseDto(product.getPurchase()));
+//        productDTO.setPurchaseDTO(PurchaseService.setPurchaseDto(product.getPurchase()));
 
         return productDTO;
     }

@@ -20,10 +20,10 @@ public interface IProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findAllByStatus(boolean b);
 
 
+    //no se usa. trae los productos completos "con la compra" dnd fue comprado. no pareciera necesario x ahora
     @Query("SELECT p, c FROM Product p LEFT JOIN p.purchase c WHERE p.status = true")
     List<Product> findAllWithPurchasesByStatus();
 
 }
 
 
-    ;

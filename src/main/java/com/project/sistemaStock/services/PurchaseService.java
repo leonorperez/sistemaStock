@@ -48,8 +48,8 @@ public class PurchaseService implements IPurchaseService {
     public Map<String, Object> getAll() {
         Map<String, Object> response = new HashMap<>();
         try {
-//            List<Purchase> purchases = iPurchaseRepository.findAllWithProductsAndStatus();
-            List<Purchase> purchases = iPurchaseRepository.findAllByStatus(true);
+            List<Purchase> purchases = iPurchaseRepository.findAllPurchasesWithProducts();
+//            List<Purchase> purchases = iPurchaseRepository.findAllByStatus(true);
 
             List<PurchaseDTO> listPurchaseDTO = new ArrayList<>();
             for (Purchase purchase : purchases) {
@@ -145,6 +145,7 @@ public class PurchaseService implements IPurchaseService {
         purchaseDTO.setQuantity(purchase.getQuantity());
         purchaseDTO.setValue(purchase.getValue());
         purchaseDTO.setTotal(purchase.getTotal());
+        purchaseDTO.setProducts(ProductService.productsToProductsDto(purchase.getProducts()));
         return purchaseDTO;
     }
 
