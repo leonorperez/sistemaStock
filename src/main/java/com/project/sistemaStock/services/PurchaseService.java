@@ -21,8 +21,6 @@ public class PurchaseService implements IPurchaseService {
     public Map<String, Object> create(Purchase purchase) {
         Map<String, Object> response = new HashMap<>();
         try {
-
-
             Purchase newPurchase = new Purchase(purchase.getDate(), purchase.getQuantity(), purchase.getTotal(), purchase.getValue(), purchase.getProducts());
 
             if (newPurchase.getProducts() != null) {
@@ -33,8 +31,6 @@ public class PurchaseService implements IPurchaseService {
             newPurchase = iPurchaseRepository.save(newPurchase);
 
             PurchaseDTO purchaseDTO = setPurchaseDto(newPurchase);
-
-
             response.put("errors", Collections.singletonMap("message", null));
             response.put("data", purchaseDTO);
         } catch (Exception e) {
@@ -43,13 +39,11 @@ public class PurchaseService implements IPurchaseService {
         return response;
     }
 
-
     @Override
     public Map<String, Object> getAll() {
         Map<String, Object> response = new HashMap<>();
         try {
             List<Purchase> purchases = iPurchaseRepository.findAllPurchasesWithProducts();
-//            List<Purchase> purchases = iPurchaseRepository.findAllByStatus(true);
 
             List<PurchaseDTO> listPurchaseDTO = new ArrayList<>();
             for (Purchase purchase : purchases) {
@@ -76,13 +70,11 @@ public class PurchaseService implements IPurchaseService {
                 Purchase purchase = optionalPurchase.get();
                 response.put("errors", Collections.singletonMap("message", null));
                 response.put("data", purchase);
-
             } else {
                 response.put("errors", Collections.singletonMap("message", "Compra inexistente"));
             }
         } catch (Exception e) {
             response.put("errors", Collections.singletonMap("message", e.getMessage()));
-
         }
         return response;
     }
@@ -163,6 +155,5 @@ public class PurchaseService implements IPurchaseService {
             purchase.setTotal(purchaseDTO.getTotal());
         }
     }
-
 
 }

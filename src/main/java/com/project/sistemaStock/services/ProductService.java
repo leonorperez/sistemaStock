@@ -20,12 +20,9 @@ public class ProductService implements IProductService {
     public Map<String, Object> create(Product product) {
         Map<String, Object> response = new HashMap<>();
         try {
-
             iProductRepository.save(product);
-
             response.put("errors", Collections.singletonMap("message", null));
             response.put("data", product);
-
         } catch (Exception e) {
             response.put("errors", Collections.singletonMap("message", e.getMessage()));
         }
@@ -61,7 +58,6 @@ public class ProductService implements IProductService {
         Map<String, Object> response = new HashMap<>();
         try {
             List<Product> products = iProductRepository.findAllByStatus(true);
-//            List<Product> products = iProductRepository.findAllWithPurchasesByStatus();
 
             List<ProductDTO> listProductDTO = new ArrayList<>();
             for (Product product : products) {
@@ -164,8 +160,6 @@ public class ProductService implements IProductService {
         productDTO.setCode(product.getCode());
         productDTO.setPrice(product.getPrice());
         productDTO.setQuantity(product.getQuantity());
-//        productDTO.setPurchaseDTO(PurchaseService.setPurchaseDto(product.getPurchase()));
-
         return productDTO;
     }
 
