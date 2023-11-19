@@ -37,6 +37,10 @@ public class Product {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_purchase")
+    private Purchase purchase;
+
     @Column(name = "status", nullable = false)
     @ColumnDefault("true")
     private Boolean status;

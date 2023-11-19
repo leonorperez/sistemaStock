@@ -1,11 +1,8 @@
 package com.project.sistemaStock.dto;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -18,6 +15,4 @@ public class ProductDTO {
     private String name;
     private int quantity;
     private BigDecimal price;
-
-
-}
+ }

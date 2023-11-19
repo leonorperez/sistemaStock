@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -20,11 +21,12 @@ public class Purchase {
 
     }
 
-    public Purchase(LocalDateTime date, int quantity, BigDecimal value, BigDecimal total) {
+    public Purchase(LocalDateTime date, int quantity, BigDecimal value, BigDecimal total, List<Product> products) {
         this.date = date;
         this.quantity = quantity;
         this.value = value;
         this.total = total;
+        this.products = products;
         this.status = true;
     }
 
@@ -41,6 +43,9 @@ public class Purchase {
 
     @Column(name = "value", nullable = false)
     private BigDecimal value;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "purchase", cascade = CascadeType.ALL)
+    List<Product> products;
 
     @Column(name = "total", nullable = false)
     private BigDecimal total;
