@@ -41,6 +41,10 @@ public class Product {
     @JoinColumn(name = "id_purchase")
     private Purchase purchase;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_sale")
+    private Sale sale;
+
     @Column(name = "status", nullable = false)
     @ColumnDefault("true")
     private Boolean status;

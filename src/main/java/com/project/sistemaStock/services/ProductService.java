@@ -41,7 +41,7 @@ public class ProductService implements IProductService {
                 ProductDTO productDTO = setProductDto(product);
 
                 response.put("errors", Collections.singletonMap("message", null));
-                response.put("data", product);
+                response.put("data", productDTO);
 
             } else {
                 response.put("errors", Collections.singletonMap("message", "Producto Inexistente"));

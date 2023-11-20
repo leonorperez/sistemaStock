@@ -1,6 +1,8 @@
 package com.project.sistemaStock.services;
 
+import com.project.sistemaStock.dto.PurchaseDTO;
 import com.project.sistemaStock.dto.SaleDTO;
+import com.project.sistemaStock.model.Product;
 import com.project.sistemaStock.model.Sale;
 import com.project.sistemaStock.repository.ISaleRepository;
 import org.springframework.stereotype.Service;
@@ -21,10 +23,17 @@ public class SaleService implements ISaleService {
         Map<String, Object> response = new HashMap<>();
         System.out.println(sale);
         try {
-            Sale newSale = new Sale(sale.getDate(),sale.getQuantity(), sale.getTotal(),sale.getValue());
+            Sale newSale = new Sale(sale.getDate(),sale.getQuantity(), sale.getTotal(),sale.getValue(),sale.getProducts());
+            if (newSale.getProducts() != null) {
+                for (Product product : newSale.getProducts()) {
+                    product.setSale(newSale);
+                }
+            }
             newSale = iSaleRepository.save(newSale);
+
+            SaleDTO saleDTO = saleToSaleDto(newSale);
             response.put("errors", Collections.singletonMap("message", null));
-            response.put("data", newSale);
+            response.put("data", saleDTO);
         } catch (Exception e) {
             response.put("errors", Collections.singletonMap("message", e.getMessage()));
         }
@@ -60,7 +69,7 @@ public class SaleService implements ISaleService {
 
             List<SaleDTO> listSaleDTO = new ArrayList<>();
             for (Sale sale : sales) {
-                SaleDTO saleDto = setSaleDto(sale);
+                SaleDTO saleDto = saleToSaleDto(sale);
                 listSaleDTO.add(saleDto);
             }
             response.put("errors", Collections.singletonMap("message", null));
@@ -82,7 +91,7 @@ public class SaleService implements ISaleService {
                 Sale sale = optionalSale.get();
                 setSale(saleDTO, sale);
                 iSaleRepository.save(sale);
-                SaleDTO responseSaleDTO = setSaleDto(sale);
+                SaleDTO responseSaleDTO = saleToSaleDto(sale);
                 response.put("errors", Collections.singletonMap("message", null));
                 response.put("data", responseSaleDTO);
                 response.put("result: ", "Sale updated successfully");
@@ -107,7 +116,7 @@ public class SaleService implements ISaleService {
                 Sale sale = optionalSale.get();
                 sale.setStatus(false);
                 iSaleRepository.save(sale);
-                SaleDTO saleDTO = setSaleDto(sale);
+                SaleDTO saleDTO = saleToSaleDto(sale);
 
                 response.put("errors", Collections.singletonMap("message", null));
                 response.put("data", saleDTO);
@@ -125,13 +134,14 @@ public class SaleService implements ISaleService {
     }
 
 
-    private SaleDTO setSaleDto(Sale sale) {
+    private SaleDTO saleToSaleDto(Sale sale) {
         SaleDTO saleDTO = new SaleDTO();
         saleDTO.setId(sale.getId());
         saleDTO.setDate(sale.getDate());
         saleDTO.setQuantity(sale.getQuantity());
         saleDTO.setValue(sale.getValue());
         saleDTO.setTotal(sale.getTotal());
+        saleDTO.setProducts(ProductService.productsToProductsDto(sale.getProducts()));
         return saleDTO;
     }
 
