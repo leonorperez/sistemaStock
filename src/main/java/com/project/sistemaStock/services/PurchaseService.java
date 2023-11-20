@@ -21,7 +21,8 @@ public class PurchaseService implements IPurchaseService {
     public Map<String, Object> create(Purchase purchase) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Purchase newPurchase = new Purchase(purchase.getDate(), purchase.getQuantity(), purchase.getTotal(), purchase.getValue(), purchase.getProducts());
+            Purchase newPurchase = new Purchase(purchase.getDate(), purchase.getQuantity(),
+                    purchase.getTotal(), purchase.getValue(), purchase.getProducts());
 
             if (newPurchase.getProducts() != null) {
                 for (Product product : newPurchase.getProducts()) {
@@ -43,7 +44,7 @@ public class PurchaseService implements IPurchaseService {
     public Map<String, Object> getAll() {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<Purchase> purchases = iPurchaseRepository.findAllPurchasesWithProducts();
+            List<Purchase> purchases = iPurchaseRepository.findAllByStatus(true);
 
             List<PurchaseDTO> listPurchaseDTO = new ArrayList<>();
             for (Purchase purchase : purchases) {

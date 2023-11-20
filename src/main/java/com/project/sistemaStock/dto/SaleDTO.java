@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -17,5 +18,6 @@ public class SaleDTO {
     private int quantity;
     private BigDecimal value;
     private BigDecimal total;
+    private List<ProductDTO> products;
 }
 
