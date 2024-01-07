@@ -132,7 +132,7 @@ public class UserService implements IUserService {
         return response;
     }
 
-    private UserDTO setUserDto(User user) {
+    public static UserDTO setUserDto(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());

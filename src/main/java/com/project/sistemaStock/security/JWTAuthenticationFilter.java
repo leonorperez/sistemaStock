@@ -1,6 +1,8 @@
 package com.project.sistemaStock.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.project.sistemaStock.dto.UserDTO;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +22,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.project.sistemaStock.services.UserService.setUserDto;
+
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
@@ -27,11 +31,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         AuthCredentials authCredentials = new AuthCredentials();
         try {
             authCredentials = new ObjectMapper().readValue(request.getReader(), AuthCredentials.class);
-        }catch (IOException e){
+        } catch (IOException e) {
 
         }
 
-        UsernamePasswordAuthenticationToken userNamePat =new UsernamePasswordAuthenticationToken(
+        UsernamePasswordAuthenticationToken userNamePat = new UsernamePasswordAuthenticationToken(
                 authCredentials.getEmail(),
                 authCredentials.getPassword(),
                 Collections.emptyList()
@@ -51,6 +55,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } else {
             errorMessage = "Error de autenticación. Por favor, verifica tus credenciales.";
         }
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("timestamp", System.currentTimeMillis());
@@ -68,42 +73,31 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-        UserDetailsImpl userDetails = (UserDetailsImpl)authResult.getPrincipal();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
 
-        String token = TokenUtils.createToken(userDetails.getName(),userDetails.getUsername());
-
+        String token = TokenUtils.createToken(userDetails.getName(), userDetails.getUsername());
 
         // Crear un objeto JSON con la información del usuario
-        JSONObject userJson = new JSONObject();
-        try {
-            //aca hay que hacer una llamada byId y traer el usuario completo y dejar de hacer un try x cada item
-            userJson.put("name", userDetails.getName());
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            userJson.put("username", userDetails.getUsername());
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        UserDTO userDTO = setUserDto(userDetails.getUser());
 
         JSONObject responseJson = new JSONObject();
+
         try {
+            JSONObject userJson = new JSONObject(new Gson().toJson(userDTO));
+
+
+            // Agregar directamente el objeto userDTO al objeto JSON
             responseJson.put("user", userJson);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        try {
             responseJson.put("token", "Bearer " + token);
+
+            response.addHeader("Authorization", "Bearer " + token);
+            response.setContentType("application/json");
+            response.getWriter().write(responseJson.toString());
+            response.getWriter().flush();
+
+            super.successfulAuthentication(request, response, chain, authResult);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-
-        response.addHeader("Authorization", "Bearer " + token);
-        response.setContentType("application/json");
-        response.getWriter().write(responseJson.toString());
-        response.getWriter().flush();
-
-        super.successfulAuthentication(request, response, chain, authResult);
     }
 }
