@@ -1,10 +1,13 @@
 package com.project.sistemaStock.services;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.project.sistemaStock.dto.PurchaseDTO;
 import com.project.sistemaStock.model.Product;
 import com.project.sistemaStock.model.Purchase;
+import com.project.sistemaStock.repository.IProductRepository;
 import com.project.sistemaStock.repository.IPurchaseRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -12,10 +15,12 @@ import java.util.*;
 @Service
 public class PurchaseService implements IPurchaseService {
     private final IPurchaseRepository iPurchaseRepository;
+    private final IProductRepository iProductRepository;
 
 
-    public PurchaseService(IPurchaseRepository iPurchaseRepository) {
+    public PurchaseService(IPurchaseRepository iPurchaseRepository, IProductRepository iProductRepository) {
         this.iPurchaseRepository = iPurchaseRepository;
+        this.iProductRepository = iProductRepository;
     }
     @Override
     public Map<String, Object> create(Purchase purchase) {
@@ -39,6 +44,46 @@ public class PurchaseService implements IPurchaseService {
         }
         return response;
     }
+    @Override
+    @Transactional
+    public Map<String, Object> findOrCreatePurchase(Purchase purchase) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Purchase newPurchase = new Purchase(purchase.getDate(), purchase.getQuantity(),
+                    purchase.getTotal(), purchase.getValue(), purchase.getProducts());
+
+            if (newPurchase.getProducts() != null) {
+                for (Product product : newPurchase.getProducts()) {
+                   Optional<Product> existingProduct = iProductRepository.findByCodeOrName(product.getName());
+                    if(existingProduct.isPresent()){
+
+                        Product existing = existingProduct.get();
+                        existing.setStock(product.getStock());
+                        existing.setPrice(product.getPrice());
+
+                        product = existing;
+
+
+
+                        System.out.println("exist: "+ existing);
+
+                    }else{
+                        product.setPurchase(newPurchase);
+                    }
+                }
+            }
+            newPurchase = iPurchaseRepository.save(newPurchase);
+
+            PurchaseDTO purchaseDTO = setPurchaseDto(newPurchase);
+            response.put("errors", Collections.singletonMap("message", null));
+            response.put("data", purchaseDTO);
+        } catch (Exception e) {
+            response.put("errors", Collections.singletonMap("message", e.getMessage()));
+        }
+        return response;
+    }
+
+
 
     @Override
     public Map<String, Object> getAll() {

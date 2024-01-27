@@ -52,6 +52,29 @@ public class ProductService implements IProductService {
         }
         return response;
     }
+    @Override
+    public Map<String, Object> getByCodeOrName(String data) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Optional<Product> optionalProduct = iProductRepository.findByCodeOrName(data);
+
+            if (optionalProduct.isPresent()) {
+                Product product = optionalProduct.get();
+
+                ProductDTO productDTO = setProductDto(product);
+
+                response.put("errors", Collections.singletonMap("message", null));
+                response.put("data", productDTO);
+
+            } else {
+                response.put("errors", Collections.singletonMap("message", "Producto Inexistente"));
+            }
+        } catch (Exception e) {
+            response.put("errors", Collections.singletonMap("message", e.getMessage()));
+
+        }
+        return response;
+    }
 
     @Override
     public Map<String, Object> getAll() {
@@ -140,8 +163,8 @@ public class ProductService implements IProductService {
         if (productDTO.getPrice() != null) {
             product.setPrice(productDTO.getPrice());
         }
-        if (productDTO.getQuantity() != 0) {
-            product.setQuantity(productDTO.getQuantity());
+        if (productDTO.getStock() != 0) {
+            product.setStock(productDTO.getStock());
         }
     }
 
@@ -159,7 +182,7 @@ public class ProductService implements IProductService {
         productDTO.setName(product.getName());
         productDTO.setCode(product.getCode());
         productDTO.setPrice(product.getPrice());
-        productDTO.setQuantity(product.getQuantity());
+        productDTO.setStock(product.getStock());
         return productDTO;
     }
 

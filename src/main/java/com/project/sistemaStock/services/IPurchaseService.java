@@ -9,6 +9,9 @@ import java.util.UUID;
 
 public interface IPurchaseService {
     Map<String, Object> create(Purchase purchase);
+
+    Map<String, Object> findOrCreatePurchase(Purchase purchase);
+
     Map<String,Object> getAll();
     Map<String, Object> getById(UUID id);
     Map<String, Object> update(UUID id, PurchaseDTO purchaseDTO);

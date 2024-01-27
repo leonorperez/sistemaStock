@@ -13,6 +13,9 @@ import java.util.UUID;
 @Service
 public interface IProductService {
     Map<String, Object> create(Product product);
+
+    Map<String, Object> getByCodeOrName(String codeOrName);
+
     Map<String,Object> getAll();
     Map<String, Object> getById(UUID id);
     Map<String, Object> update(UUID id, ProductDTO productDTO);
