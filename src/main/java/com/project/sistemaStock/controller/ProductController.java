@@ -47,6 +47,20 @@ public class ProductController {
             return new ResponseEntity<>("Invalid UUID", HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping("/product/codeOrName/{codeOrName}")
+    public ResponseEntity<?> getByCodeOrName(@PathVariable String codeOrName) {
+        try {
+            Map<String, Object> response = iProductService.getByCodeOrName(codeOrName);
+
+            if (response.containsKey("data")) {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("Invalid Name or Code", HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @GetMapping(value = "/products")
     public ResponseEntity<?> listProducts() {

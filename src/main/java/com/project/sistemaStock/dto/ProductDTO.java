@@ -13,6 +13,6 @@ public class ProductDTO {
     private UUID id;
     private String code;
     private String name;
-    private int quantity;
+    private int stock;
     private BigDecimal price;
  }

@@ -19,9 +19,20 @@ public class PurchaseController {
     private final IPurchaseService iPurchaseService;
 
     @PostMapping(value = "/purchase/new")
-    public ResponseEntity<?> save(@RequestBody Purchase purchase) {
+    public ResponseEntity<?> savePurchase(@RequestBody Purchase purchase) {
         try {
             Map<String, Object> response = iPurchaseService.create(purchase);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+
+    @PostMapping(value = "/purchase/findOrCreate")
+    public ResponseEntity<?> save(@RequestBody Purchase purchase) {
+        try {
+            Map<String, Object> response = iPurchaseService.findOrCreatePurchase(purchase);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());

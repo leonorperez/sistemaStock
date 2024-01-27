@@ -12,7 +12,10 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @Entity
-@Table(name = "products")
+@Table(name = "products", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "code"),
+        @UniqueConstraint(columnNames = "name")
+})
 public class Product {
 
     public Product() {
@@ -24,15 +27,15 @@ public class Product {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @Column(name = "code", nullable = false, length = 200)
+    @Column(name = "code", nullable = false, length = 200, unique = true)
     private String code;
 
-    @Column(name = "name", nullable = false, length = 200)
+    @Column(name = "name", nullable = false, length = 200, unique = true)
     private String name;
 
-    @Column(name = "quantity")
+    @Column(name = "stock")
     @ColumnDefault("0")
-    private int quantity;
+    private int stock;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
