@@ -2,10 +2,8 @@ package com.project.sistemaStock.controller;
 
 import com.project.sistemaStock.dto.ProductDTO;
 import com.project.sistemaStock.model.Product;
-import com.project.sistemaStock.repository.IProductRepository;
 import com.project.sistemaStock.services.IProductService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +45,7 @@ public class ProductController {
             return new ResponseEntity<>("Invalid UUID", HttpStatus.BAD_REQUEST);
         }
     }
+
     @GetMapping("/product/codeOrName/{codeOrName}")
     public ResponseEntity<?> getByCodeOrName(@PathVariable String codeOrName) {
         try {
@@ -77,6 +76,7 @@ public class ProductController {
         }
 
     }
+
     @PutMapping("/product/{id}")
     public ResponseEntity<?> updateUserById(@PathVariable UUID id, @RequestBody ProductDTO productDTO) {
         try {
@@ -104,7 +104,5 @@ public class ProductController {
             return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
-
 
 }

@@ -1,6 +1,6 @@
 package com.project.sistemaStock.services;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
+import com.project.sistemaStock.dto.ProductDTO;
 import com.project.sistemaStock.dto.PurchaseDTO;
 import com.project.sistemaStock.model.Product;
 import com.project.sistemaStock.model.Purchase;
@@ -22,6 +22,7 @@ public class PurchaseService implements IPurchaseService {
         this.iPurchaseRepository = iPurchaseRepository;
         this.iProductRepository = iProductRepository;
     }
+
     @Override
     public Map<String, Object> create(Purchase purchase) {
         Map<String, Object> response = new HashMap<>();
@@ -50,25 +51,20 @@ public class PurchaseService implements IPurchaseService {
         Map<String, Object> response = new HashMap<>();
         try {
             Purchase newPurchase = new Purchase(purchase.getDate(), purchase.getQuantity(),
-                    purchase.getTotal(), purchase.getValue(), purchase.getProducts());
+                    purchase.getTotal(), purchase.getValue(), new ArrayList<>());
 
-            if (newPurchase.getProducts() != null) {
-                for (Product product : newPurchase.getProducts()) {
-                   Optional<Product> existingProduct = iProductRepository.findByCodeOrName(product.getName());
-                    if(existingProduct.isPresent()){
-
+            if (purchase.getProducts() != null) {
+                for (Product product : purchase.getProducts()) {
+                    Optional<Product> existingProduct = iProductRepository.findByCodeOrName(product.getName());
+                    if (existingProduct.isPresent()) {
                         Product existing = existingProduct.get();
-                        existing.setStock(product.getStock());
+                        existing.setStock(existing.getStock() + product.getStock());
                         existing.setPrice(product.getPrice());
-
-                        product = existing;
-
-
-
-                        System.out.println("exist: "+ existing);
-
-                    }else{
+                        existing.setPurchase(newPurchase);
+                        newPurchase.getProducts().add(existing);
+                    } else {
                         product.setPurchase(newPurchase);
+                        newPurchase.getProducts().add(product);
                     }
                 }
             }
@@ -82,7 +78,6 @@ public class PurchaseService implements IPurchaseService {
         }
         return response;
     }
-
 
 
     @Override
@@ -114,8 +109,10 @@ public class PurchaseService implements IPurchaseService {
 
             if (optionalPurchase.isPresent()) {
                 Purchase purchase = optionalPurchase.get();
+                PurchaseDTO responsePurchaseDTO = setPurchaseDto(purchase);
                 response.put("errors", Collections.singletonMap("message", null));
-                response.put("data", purchase);
+                response.put("data", responsePurchaseDTO);
+                response.put("result: ", "Purchase successfully");
             } else {
                 response.put("errors", Collections.singletonMap("message", "Compra inexistente"));
             }

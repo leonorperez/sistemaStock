@@ -60,7 +60,6 @@ public class ProductService implements IProductService {
 
             if (optionalProduct.isPresent()) {
                 Product product = optionalProduct.get();
-
                 ProductDTO productDTO = setProductDto(product);
 
                 response.put("errors", Collections.singletonMap("message", null));

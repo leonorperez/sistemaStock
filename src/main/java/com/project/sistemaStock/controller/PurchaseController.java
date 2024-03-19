@@ -28,7 +28,6 @@ public class PurchaseController {
         }
     }
 
-
     @PostMapping(value = "/purchase/findOrCreate")
     public ResponseEntity<?> save(@RequestBody Purchase purchase) {
         try {
@@ -71,7 +70,6 @@ public class PurchaseController {
             return new ResponseEntity<>("Invalid UUID", HttpStatus.BAD_REQUEST);
         }
     }
-
 
     @PutMapping("/purchase/{id}")
     public ResponseEntity<?> updatePurchaseById(@PathVariable UUID id, @RequestBody PurchaseDTO purchaseDTO) {
